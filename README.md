@@ -41,7 +41,7 @@ The main idea was to build a simple CRUD application and implement a rating syst
 ## Project Structure
 
 ```
-varun-assignment/
+varun-dangre-assignment/
 
 ajax/
   add_business.php
@@ -145,6 +145,6 @@ Average rating is calculated dynamically while fetching businesses.
 
 ## Author
 
-Varun
+Varun Dangre
 
 (Assignment Project)

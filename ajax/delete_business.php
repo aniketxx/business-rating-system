@@ -1,3 +1,9 @@
 <?php
-include "../conn.php";
-$conn->query("DELETE FROM businesses WHERE id=".$_POST['id']);
+require "../conn.php";
+
+$id = $_POST['id'] ?? 0;
+
+$stmt = $conn->prepare("DELETE FROM businesses WHERE id=?");
+$stmt->execute([$id]);
+
+echo "success";

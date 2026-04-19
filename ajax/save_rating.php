@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/../conn.php';
+header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -9,9 +10,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = $_POST['phone'];
     $rating = $_POST['rating'];
 
+    if (empty($name)) {
+        exit(json_encode(["status" => "error", "message" => "Name required"]));
+    }
+
+    if (empty($email) && empty($phone)) {
+        exit(json_encode(["status" => "error", "message" => "Email or Phone required"]));
+    }
+
+    if ($rating < 0 || $rating > 5) {
+        exit(json_encode(["status" => "error", "message" => "Invalid rating"]));
+    }
+
     try {
 
-        /* CHECK IF USER ALREADY RATED */
+        
         $check = $conn->prepare("
             SELECT id FROM ratings
             WHERE business_id = ?
@@ -22,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($check->rowCount() > 0) {
 
-            /* UPDATE EXISTING RATING */
+            
             $update = $conn->prepare("
                 UPDATE ratings
                 SET rating = ?
@@ -36,10 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email,
                 $phone
             ]);
-
         } else {
 
-            /* INSERT NEW RATING */
+            
             $insert = $conn->prepare("
                 INSERT INTO ratings
                 (business_id, name, email, phone, rating)
@@ -59,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "status" => "success",
             "message" => "Rating saved successfully"
         ]);
-
     } catch (Exception $e) {
         echo json_encode([
             "status" => "error",
